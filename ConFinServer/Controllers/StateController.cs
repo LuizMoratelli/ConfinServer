@@ -14,39 +14,39 @@ namespace ConFinServer.Controllers
     public class StateController : ControllerBase
     {
         [HttpGet("/states")]
-        public List<State> ListStates()
+        public List<State> All()
         {
-            return StateDB.GetStates();
+            return StateRepository.All();
         }
 
         [HttpGet("/states/{est_sigla}")]
-        public State ListState()
+        public State Find()
         {
             string est_sigla = (string) Url.ActionContext.RouteData.Values["est_sigla"];
 
-            return StateDB.GetState(est_sigla);
+            return StateRepository.Find(est_sigla);
         }
 
         [HttpPost("/states")]
-        public string CreateState(State state)
+        public string Add(State state)
         {
-            bool success = StateDB.AddState(state);
+            bool success = StateRepository.Add(state);
 
             return "State created with success";
         }
 
         [HttpPut("/states")]
-        public string UpdateState(State state)
+        public string Update(State state)
         {
-            bool success = StateDB.ChangeState(state);
+            bool success = StateRepository.Update(state);
 
             return "State updated with success";
         }
 
         [HttpDelete("/states")]
-        public string DeleteState(State state)
+        public string Delete(State state)
         {
-            bool success = StateDB.RemoveState(state);
+            bool success = StateRepository.Delete(state);
 
             return "State removed with success";
         }

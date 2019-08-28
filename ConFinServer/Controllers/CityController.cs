@@ -14,39 +14,39 @@ namespace ConFinServer.Controllers
     public class CityController : ControllerBase
     {
         [HttpGet("/cities")]
-        public List<City> ListCities()
+        public List<City> All()
         {
-            return CityDB.GetCities();
+            return CityRepository.All();
         }
 
         [HttpGet("/cities/{cid_codigo}")]
-        public City ListCity()
+        public City Find()
         {
             int cid_codigo = Convert.ToInt32(Url.ActionContext.RouteData.Values["cid_codigo"]);
 
-            return CityDB.GetCity(cid_codigo);
+            return CityRepository.Find(cid_codigo);
         }
 
         [HttpPost("/cities")]
-        public string CreateCity(City city)
+        public string Add(City city)
         {
-            bool success = CityDB.AddCity(city);
+            bool success = CityRepository.Add(city);
 
             return "City created with success";
         }
 
         [HttpPut("/cities")]
-        public string UpdateCity(City city)
+        public string Update(City city)
         {
-            bool success = CityDB.ChangeCity(city);
+            bool success = CityRepository.Update(city);
 
             return "City updated with success";
         }
 
         [HttpDelete("/cities")]
-        public string DeleteCity(City city)
+        public string Delete(City city)
         {
-            bool success = CityDB.RemoveCity(city);
+            bool success = CityRepository.Delete(city);
 
             return "City removed with success";
         }

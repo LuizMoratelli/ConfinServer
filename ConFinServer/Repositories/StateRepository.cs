@@ -8,25 +8,24 @@ using System.Threading.Tasks;
 
 namespace ConFinServer.Repositories
 {
-    public class CityDB
+    public class StateRepository
     {
-        public static List<City> GetCities()
+        public static List<State> All()
         {
-            List<City> cities = new List<City>();
+            List<State> states = new List<State>();
 
             try
             {
-                string sql = "SELECT * from cidade";
+                string sql = "SELECT * from estado";
                 NpgsqlCommand cmd = new NpgsqlCommand(sql, Connection.GetConnection());
                 NpgsqlDataReader dr = cmd.ExecuteReader();
 
                 while (dr.Read())
                 {
-                    int id = (int) dr["cid_codigo"];
-                    string nome = (string) dr["nome"];
-                    string est_sigla = (string) dr["est_sigla"];
+                    string sigla = (string)dr["est_sigla"];
+                    string nome = (string)dr["nome"];
 
-                    cities.Add(new City(id, nome, est_sigla));
+                    states.Add(new State(sigla, nome));
                 }
             }
             catch (NpgsqlException e)
@@ -34,27 +33,26 @@ namespace ConFinServer.Repositories
                 Console.WriteLine(e.Message);
             }
 
-            return cities;
+            return states;
         }
 
-        public static City GetCity(int cid_codigo)
+        public static State Find(string est_sigla)
         {
-            City city = null;
+            State state = null;
 
             try
             {
-                string sql = "SELECT * FROM cidade WHERE cid_codigo = @cid_codigo";
+                string sql = "SELECT * FROM estado WHERE est_sigla = @est_sigla";
                 NpgsqlCommand cmd = new NpgsqlCommand(sql, Connection.GetConnection());
-                cmd.Parameters.Add("@cid_codigo", NpgsqlTypes.NpgsqlDbType.Integer).Value = cid_codigo;
+                cmd.Parameters.Add("@est_sigla", NpgsqlTypes.NpgsqlDbType.Varchar).Value = est_sigla;
                 NpgsqlDataReader dr = cmd.ExecuteReader();
 
                 while (dr.Read())
                 {
-                    int id = (int) dr["cid_codigo"];
-                    string nome = (string) dr["nome"];
-                    string est_sigla = (string) dr["est_sigla"];
+                    string sigla = (string)dr["est_sigla"];
+                    string nome = (string)dr["nome"];
 
-                    city = new City(id, nome, est_sigla);
+                    state = new State(sigla, nome);
                 }
             }
             catch (NpgsqlException e)
@@ -62,20 +60,19 @@ namespace ConFinServer.Repositories
                 Console.WriteLine(e.Message);
             }
 
-            return city;
+            return state;
         }
 
-        public static bool AddCity(City city)
+        public static bool Add(State state)
         {
             bool success = false;
 
             try
             {
-                string sql = "INSERT INTO cidade(cid_codigo, nome, est_sigla) VALUES(@cid_codigo, @nome, @est_sigla)";
+                string sql = "INSERT INTO estado(est_sigla, nome) VALUES(@sigla, @nome)";
                 NpgsqlCommand cmd = new NpgsqlCommand(sql, Connection.GetConnection());
-                cmd.Parameters.Add("@cid_codigo", NpgsqlTypes.NpgsqlDbType.Integer).Value = city.cid_codigo;
-                cmd.Parameters.Add("@nome", NpgsqlTypes.NpgsqlDbType.Varchar).Value = city.nome;
-                cmd.Parameters.Add("@est_sigla", NpgsqlTypes.NpgsqlDbType.Varchar).Value = city.est_sigla;
+                cmd.Parameters.Add("@sigla", NpgsqlTypes.NpgsqlDbType.Varchar).Value = state.est_sigla;
+                cmd.Parameters.Add("@nome", NpgsqlTypes.NpgsqlDbType.Varchar).Value = state.nome;
 
                 if (cmd.ExecuteNonQuery() == 1)
                 {
@@ -90,17 +87,16 @@ namespace ConFinServer.Repositories
             return success;
         }
 
-        public static bool ChangeCity(City city)
+        public static bool Update(State state)
         {
             bool success = false;
 
             try
             {
-                string sql = "UPDATE cidade SET nome = @nome, est_sigla = @nome WHERE cid_codigo = @cid_codigo";
+                string sql = "UPDATE estado SET nome = @nome WHERE est_sigla = @sigla";
                 NpgsqlCommand cmd = new NpgsqlCommand(sql, Connection.GetConnection());
-                cmd.Parameters.Add("@cid_codigo", NpgsqlTypes.NpgsqlDbType.Integer).Value = city.cid_codigo;
-                cmd.Parameters.Add("@nome", NpgsqlTypes.NpgsqlDbType.Varchar).Value = city.nome;
-                cmd.Parameters.Add("@est_sigla", NpgsqlTypes.NpgsqlDbType.Varchar).Value = city.est_sigla;
+                cmd.Parameters.Add("@nome", NpgsqlTypes.NpgsqlDbType.Varchar).Value = state.nome;
+                cmd.Parameters.Add("@est_sigla", NpgsqlTypes.NpgsqlDbType.Varchar).Value = state.est_sigla;
 
                 if (cmd.ExecuteNonQuery() == 1)
                 {
@@ -115,15 +111,15 @@ namespace ConFinServer.Repositories
             return success;
         }
 
-        public static bool RemoveCity(City city)
+        public static bool Delete(State state)
         {
             bool success = false;
 
             try
             {
-                string sql = "DELETE FROM cidade WHERE cid_codigo = @cid_codigo";
+                string sql = "DELETE FROM estado WHERE est_sigla = @sigla";
                 NpgsqlCommand cmd = new NpgsqlCommand(sql, Connection.GetConnection());
-                cmd.Parameters.Add("@cid_codigo", NpgsqlTypes.NpgsqlDbType.Integer).Value = city.cid_codigo;
+                cmd.Parameters.Add("@sigla", NpgsqlTypes.NpgsqlDbType.Varchar).Value = state.est_sigla;
 
                 if (cmd.ExecuteNonQuery() == 1)
                 {
