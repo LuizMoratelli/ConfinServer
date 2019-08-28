@@ -1,11 +1,12 @@
-﻿using ConFinServer.Models;
+﻿using ConFinServer.Controllers;
+using ConFinServer.Models;
 using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConFinServer.Controllers
+namespace ConFinServer.Repositories
 {
     public class StateDB
     {

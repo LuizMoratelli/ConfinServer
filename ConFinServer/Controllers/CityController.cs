@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConFinServer.Models;
+using ConFinServer.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,41 +13,40 @@ namespace ConFinServer.Controllers
     [ApiController]
     public class CityController : ControllerBase
     {
-        private static List<City> cities = new List<City>();
-
         [HttpGet("/cities")]
         public List<City> ListCities()
         {
-            return cities;
+            return CityDB.GetCities();
+        }
+
+        [HttpGet("/cities/{cid_codigo}")]
+        public City ListCity()
+        {
+            int cid_codigo = Convert.ToInt32(Url.ActionContext.RouteData.Values["cid_codigo"]);
+
+            return CityDB.GetCity(cid_codigo);
         }
 
         [HttpPost("/cities")]
-        public string CreateState(City city)
+        public string CreateCity(City city)
         {
-            cities.Add(city);
+            bool success = CityDB.AddCity(city);
 
             return "City created with success";
         }
 
         [HttpPut("/cities")]
-        public string UpdateState(City city)
+        public string UpdateCity(City city)
         {
-            City previousCity = cities.Where(c => c.cid_codigo == city.cid_codigo).First();
-                /*.Select(c => {c.nome = city.nome; c.est_sigla = city.est_sigla; return c;})
-                .ToList();*/
-
-            cities.Remove(previousCity);
-            cities.Add(city);
+            bool success = CityDB.ChangeCity(city);
 
             return "City updated with success";
         }
 
         [HttpDelete("/cities")]
-        public string DeleteState(City city)
+        public string DeleteCity(City city)
         {
-            City cityToRemove = cities.Where(c => c.cid_codigo == city.cid_codigo).Select(c => c).First();
-
-            cities.Remove(cityToRemove);
+            bool success = CityDB.RemoveCity(city);
 
             return "City removed with success";
         }
